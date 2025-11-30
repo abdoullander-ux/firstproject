@@ -1,171 +1,99 @@
-# Microservices Application
+# aliexpressNextJSKafkaMicroservices
 
-A complete microservices architecture application built with Next.js, Node.js Express, Kafka, MySQL, and Docker.
-
-## Architecture
-
-This application consists of:
-
-- **Frontend**: Next.js application (Port 3000)
-- **Product Service**: Node.js Express microservice for product management (Port 3001)
-- **Sales Service**: Node.js Express microservice for sales tracking (Port 3002)
-- **Nginx**: Reverse proxy for API routing (Port 8080)
-- **Kafka**: Event streaming platform with Zookeeper
-- **MySQL**: Database server (Port 3306)
-
-## Technology Stack
-
-- **Frontend**: Next.js 15.1.3, React 19, TypeScript, Tailwind CSS
-- **Backend**: Node.js 20, Express 5.1.0, Prisma 5.22.0
-- **Message Broker**: Apache Kafka with KafkaJS 2.2.4 (Port 9093)
-- **Database**: MySQL 8.0
-- **Containerization**: Docker & Docker Compose
-- **Reverse Proxy**: Nginx
-
-## Prerequisites
-
-- Docker
-- Docker Compose
-
-## Getting Started
-
-### 1. Build and Start All Services
-
-```bash
-docker-compose up --build
-```
-
-This command will:
-- Build all Docker images
-- Start all services (MySQL, Kafka, Zookeeper, Nginx, Product Service, Sales Service, Frontend)
-- Run database migrations automatically
-- Set up networking between services
-
-### 2. Access the Application
-
-- **Frontend**: http://localhost:3000
-- **Nginx API Gateway**: http://localhost:8080
-- **Product Service Direct**: http://localhost:3001
-- **Sales Service Direct**: http://localhost:3002
-
-### 3. API Endpoints
-
-#### Product Service (via Nginx)
-- `GET http://localhost:8080/api/products` - List all products
-- `POST http://localhost:8080/api/products` - Create a new product
-
-#### Sales Service (via Nginx)
-- `GET http://localhost:8080/api/sales` - List all sales
-- `POST http://localhost:8080/api/sales` - Record a new sale
+This project is a microservices application built using Next.js for the frontend and various services for handling products, orders, and users. It utilizes Kafka for messaging between services and is designed to be easily deployable using Docker and Kubernetes.
 
 ## Project Structure
 
-```
-microservicesApp/
-├── frontend/                 # Next.js frontend application
-│   ├── src/
-│   │   └── app/
-│   │       ├── page.tsx     # Home page
-│   │       ├── products/    # Product management page
-│   │       └── sales/       # Sales tracking page
-│   └── Dockerfile
-├── product-service/         # Product microservice
-│   ├── prisma/
-│   │   ├── schema.prisma    # Database schema
-│   │   └── migrations/      # Database migrations
-│   ├── index.js             # Express server
-│   ├── start.sh             # Startup script with migrations
-│   └── Dockerfile
-├── sales-service/           # Sales microservice
-│   ├── prisma/
-│   │   ├── schema.prisma    # Database schema
-│   │   └── migrations/      # Database migrations
-│   ├── index.js             # Express server
-│   ├── start.sh             # Startup script with migrations
-│   └── Dockerfile
-├── nginx/
-│   └── nginx.conf           # Nginx configuration
-├── docker-compose.yml       # Docker Compose configuration
-└── init.sql                 # MySQL initialization script
-```
+- **frontend/**: Contains the Next.js application.
+  - **package.json**: Configuration for the frontend application.
+  - **tsconfig.json**: TypeScript configuration for the frontend.
+  - **next.config.js**: Next.js configuration settings.
+  - **pages/**: Contains the pages of the Next.js application.
+    - **index.tsx**: Main entry point for the application.
+  - **components/**: Contains reusable React components.
+    - **Header.tsx**: Header component for the application.
+  - **styles/**: Contains global styles for the application.
+    - **globals.css**: Global CSS styles.
 
-## Features
+- **services/**: Contains the microservices for product, order, and user management.
+  - **product-service/**: Service for managing products.
+    - **src/**: Source code for the product service.
+      - **index.ts**: Entry point for the product service.
+      - **controllers/**: Contains controllers for handling requests.
+        - **productController.ts**: Controller for product-related requests.
+    - **package.json**: Configuration for the product service.
+    - **Dockerfile**: Dockerfile for building the product service image.
+  - **order-service/**: Service for managing orders.
+    - **src/**: Source code for the order service.
+      - **index.ts**: Entry point for the order service.
+      - **consumers/**: Contains consumers for handling messages.
+        - **orderConsumer.ts**: Consumer for order-related messages.
+    - **package.json**: Configuration for the order service.
+    - **Dockerfile**: Dockerfile for building the order service image.
+  - **user-service/**: Service for managing users.
+    - **src/**: Source code for the user service.
+      - **index.ts**: Entry point for the user service.
+      - **controllers/**: Contains controllers for handling requests.
+        - **userController.ts**: Controller for user-related requests.
+    - **package.json**: Configuration for the user service.
+    - **Dockerfile**: Dockerfile for building the user service image.
 
-### Product Management
-- Create new products with name, description, and price
-- View all products
-- Products are stored in MySQL database
-- Product creation events are published to Kafka
+- **kafka/**: Contains Kafka configuration.
+  - **docker-compose.yml**: Docker Compose configuration for Kafka.
+  - **topics/**: Contains Kafka topics configuration.
+    - **topics.yml**: Configuration for Kafka topics.
 
-### Sales Tracking
-- Record sales transactions
-- Link sales to products
-- Automatic total price calculation
-- View sales history
-- Sales service consumes product events from Kafka
+- **infra/**: Contains infrastructure configuration.
+  - **k8s/**: Kubernetes configuration.
+    - **deployment.yaml**: Deployment configuration for services.
+    - **service.yaml**: Service configuration for exposing services.
+  - **terraform/**: Terraform configuration for infrastructure provisioning.
+    - **main.tf**: Terraform configuration file.
 
-### Event-Driven Architecture
-- Product creation events are published to Kafka
-- Sales service subscribes to product events
-- Enables loose coupling between services
+- **scripts/**: Contains scripts for managing the application.
+  - **start-all.sh**: Script for starting all services.
+  - **build.sh**: Script for building the application and services.
 
-## Development
+- **.gitignore**: Specifies files and directories to be ignored by Git.
+- **docker-compose.yml**: Docker Compose configuration for the entire application.
+- **README.md**: Documentation for the project.
 
-### Stop All Services
+## Getting Started
 
-```bash
-docker-compose down
-```
+To get started with the project, follow these steps:
 
-### Stop and Remove Volumes (Clean Start)
+1. Clone the repository:
+   ```
+   git clone https://github.com/yourusername/aliexpressNextJSKafkaMicroservices.git
+   ```
 
-```bash
-docker-compose down -v
-```
+2. Navigate to the frontend directory and install dependencies:
+   ```
+   cd frontend
+   npm install
+   ```
 
-### View Logs
+3. Navigate to each service directory and install dependencies:
+   ```
+   cd services/product-service
+   npm install
+   cd ../order-service
+   npm install
+   cd ../user-service
+   npm install
+   ```
 
-```bash
-# All services
-docker-compose logs -f
+4. Start the application using Docker Compose:
+   ```
+   docker-compose up
+   ```
 
-# Specific service
-docker-compose logs -f product-service
-docker-compose logs -f sales-service
-docker-compose logs -f frontend
-```
+5. Access the application at `http://localhost:3000`.
 
-### Rebuild Specific Service
+## Contributing
 
-```bash
-docker-compose up --build product-service
-```
-
-## Database
-
-The application uses MySQL 8.0 with Prisma ORM. Database migrations are automatically run when services start.
-
-### Database Credentials
-- Host: localhost:3306
-- Root Password: rootpassword
-- Databases: product_db, sales_db
-
-## Troubleshooting
-
-### Services not starting
-- Ensure Docker is running
-- Check if ports 3000, 3001, 3002, 3306, 8080, 9092 are available
-- Run `docker-compose down -v` to clean up and start fresh
-
-### Database connection errors
-- Wait for MySQL to fully initialize (takes ~10-15 seconds)
-- Check logs: `docker-compose logs mysql`
-
-### Kafka connection errors
-- Ensure Zookeeper is running
-- Check logs: `docker-compose logs kafka zookeeper`
+Contributions are welcome! Please open an issue or submit a pull request for any improvements or bug fixes.
 
 ## License
 
-ISC
-# firstproject
+This project is licensed under the MIT License. See the LICENSE file for details.
